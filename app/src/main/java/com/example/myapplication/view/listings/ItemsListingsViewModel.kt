@@ -40,7 +40,6 @@ class ItemsListingsViewModel: ViewModel() {
     }
 
     fun toggleReceiveData() {
-        Timber.e("AHA ${dataRepository.isReceivingData()}")
         if (dataRepository.isReceivingData()) {
             stopReceivingData()
         } else {

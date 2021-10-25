@@ -35,11 +35,6 @@ class DataRepository {
         )
     }
 
-    private fun stopWebSocket() {
-        webSocket?.close(CLOSED_NORMAL, null)
-        webSocket = null
-    }
-
     fun startReceivingData(): Observable<List<StoreItem>> {
         return Observable.create { emitter ->
             webSocketListener.callback = object : StoreDataWebSocketListener.DataCallback {
@@ -64,8 +59,10 @@ class DataRepository {
     }
 
     fun stopReceivingData() {
-        stopWebSocket()
         webSocketListener.callback = null
+//        webSocket?.close(CLOSED_NORMAL, null)
+        webSocket?.cancel()
+        webSocket = null
     }
 
     fun isReceivingData() = webSocket != null

@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
@@ -45,6 +48,19 @@ class ItemsListingsFragment : Fragment() {
                 }
             }
         })
+        adapter.callback = object : ItemListingsAdapter.ActionCallback {
+            override fun onItemClicked(view: View, name: String) {
+                val transitionName = ViewCompat.getTransitionName(view)!!
+                val action = ItemsListingsFragmentDirections.actionOpenItemDetails(transitionName)
+                val extras = FragmentNavigatorExtras(
+                    view to transitionName
+                )
+                findNavController().navigate(
+                    action, extras
+                )
+            }
+        }
+
         binding.recyclerView.addItemDecoration(
             UnifiedItemDecoration(requireContext(), R.dimen.store_items_spacing)
         )

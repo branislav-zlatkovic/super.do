@@ -18,6 +18,10 @@ class StoreDataWebSocketListener : WebSocketListener() {
         callback?.onSocketClosing()
     }
 
+    override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
+        callback?.onSocketClosing()
+    }
+
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         callback?.onSocketFailure()
     }

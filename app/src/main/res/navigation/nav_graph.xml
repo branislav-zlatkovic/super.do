@@ -12,17 +12,21 @@
         tools:layout="@layout/fragment_item_listings">
 
         <action
-            android:id="@+id/action_open_item_details"
-            app:destination="@id/itemDetailsFragment" />
+            android:id="@+id/actionOpenItemDetails"
+            app:destination="@id/itemDetailsFragment">
+        </action>
     </fragment>
+
     <fragment
         android:id="@+id/itemDetailsFragment"
         android:name="com.example.myapplication.view.itemdetails.ItemDetailsFragment"
         android:label="@string/item_details_fragment_label"
         tools:layout="@layout/fragment_item_details">
 
+        <argument android:name="sharedTransitionName" />
+
         <action
-            android:id="@+id/action_item_details_to_listings"
+            android:id="@+id/actionItemDetailsToListings"
             app:destination="@id/itemsListFragment" />
     </fragment>
 </navigation>

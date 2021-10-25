@@ -2,7 +2,9 @@ package com.example.myapplication.view.listings
 
 import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +21,16 @@ class ItemListingsAdapter(
         }
 
         override fun areContentsTheSame(oldItem: StoreItem, newItem: StoreItem): Boolean {
-            return false
+            return true
         }
     }
 ): ListAdapter<StoreItem, ItemListingsAdapter.GenericViewHolder>(diffCallback) {
+
+    interface ActionCallback {
+        fun onItemClicked(view: View, name: String)
+    }
+
+    var callback: ActionCallback? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenericViewHolder {
         return ItemViewHolder(
@@ -30,7 +38,14 @@ class ItemListingsAdapter(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ).also { binding ->
+                binding.root.setOnClickListener {
+                    callback?.onItemClicked(
+                        binding.itemBadge,
+                        binding.root.tag as String
+                    )
+                }
+            }
         )
     }
 
@@ -49,6 +64,10 @@ class ItemListingsAdapter(
             binding.itemName.text = item.name
             binding.itemWeight.text = item.weight
             binding.itemBadge.setBackgroundColor(Color.parseColor(item.bagColor))
+
+            val transitionName = "$adapterPosition:${item.bagColor}"
+            ViewCompat.setTransitionName(binding.itemBadge, transitionName)
+            binding.root.tag = transitionName
         }
     }
 }
