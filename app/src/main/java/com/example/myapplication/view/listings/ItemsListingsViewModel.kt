@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.myapplication.data.DataRepository
 import com.example.myapplication.domain.model.StoreItem
-import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -19,7 +18,11 @@ class ItemsListingsViewModel: ViewModel() {
 
     val itemsLiveData = MutableLiveData<List<StoreItem>>()
 
-    fun startReceiveData() {
+    init {
+        startReceiveData()
+    }
+
+    private fun startReceiveData() {
         dataRepository.startReceivingData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -32,8 +35,17 @@ class ItemsListingsViewModel: ViewModel() {
             ).addTo(compositeDisposable)
     }
 
-    fun stopReceivingData() {
-        dataRepository.startReceivingData()
+    private fun stopReceivingData() {
+        dataRepository.stopReceivingData()
+    }
+
+    fun toggleReceiveData() {
+        Timber.e("AHA ${dataRepository.isReceivingData()}")
+        if (dataRepository.isReceivingData()) {
+            stopReceivingData()
+        } else {
+            startReceiveData()
+        }
     }
 
     override fun onCleared() {

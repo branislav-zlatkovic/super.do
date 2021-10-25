@@ -6,8 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.myapplication.R
 import com.example.myapplication.databinding.FragmentItemListingsBinding
+import com.example.myapplication.view.common.UnifiedItemDecoration
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -23,7 +26,7 @@ class ItemsListingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(this)
+        viewModel = ViewModelProvider(requireActivity())
             .get(ItemsListingsViewModel::class.java)
         _binding = FragmentItemListingsBinding.inflate(inflater, container, false)
         return binding.root
@@ -32,24 +35,24 @@ class ItemsListingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.startReceiveData()
-
         val adapter = ItemListingsAdapter()
         adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-                binding.recyclerView.smoothScrollToPosition(0)
+                val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager
+                if (layoutManager.findFirstVisibleItemPosition() in 0..1) {
+                    binding.recyclerView.smoothScrollToPosition(0)
+                }
             }
         })
+        binding.recyclerView.addItemDecoration(
+            UnifiedItemDecoration(requireContext(), R.dimen.store_items_spacing)
+        )
         binding.recyclerView.adapter = adapter
 
         viewModel.itemsLiveData.observe(viewLifecycleOwner, {
             adapter.submitList(it)
         })
-
-//        binding.buttonFirst.setOnClickListener {
-//            findNavController().navigate(R.id.action_open_item_details)
-//        }
     }
 
     override fun onDestroyView() {

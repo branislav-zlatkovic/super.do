@@ -1,3 +1,4 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="store_items_spacing">8dp</dimen>
 </resources>

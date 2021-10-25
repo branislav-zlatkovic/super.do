@@ -67,4 +67,6 @@ class DataRepository {
         stopWebSocket()
         webSocketListener.callback = null
     }
+
+    fun isReceivingData() = webSocket != null
 }
