@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit
 class DataRepository {
 
     companion object {
-        const val CLOSED_NORMAL = 100
+        const val CLOSED_NORMAL = 1000
     }
 
     private var webSocket: WebSocket? = null
@@ -44,19 +44,18 @@ class DataRepository {
         return Observable.create { emitter ->
             webSocketListener.callback = object : StoreDataWebSocketListener.DataCallback {
                 override fun onDataReceived(data: String) {
-                    Timber.e("INCOMING DATA: $data")
                     val item = gson.fromJson(data, StoreItem::class.java)
                     dataList.add(0, item)
-                    emitter.onNext(dataList)
+                    emitter.onNext(dataList.toMutableList())
                 }
 
                 override fun onSocketClosing() {
-                    Timber.e("SOCKET CLOSING")
+                    Timber.e("Socket closing")
                     emitter.onComplete()
                 }
 
                 override fun onSocketFailure() {
-                    Timber.e("SOCKET FAILURE")
+                    Timber.e("Socket failure")
                     emitter.onError(WebSocketFailedException())
                 }
             }

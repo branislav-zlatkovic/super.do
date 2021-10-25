@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
-import com.example.myapplication.R
+import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.databinding.FragmentItemListingsBinding
 
 /**
@@ -35,9 +34,22 @@ class ItemsListingsFragment : Fragment() {
 
         viewModel.startReceiveData()
 
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_open_item_details)
-        }
+        val adapter = ItemListingsAdapter()
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                binding.recyclerView.smoothScrollToPosition(0)
+            }
+        })
+        binding.recyclerView.adapter = adapter
+
+        viewModel.itemsLiveData.observe(viewLifecycleOwner, {
+            adapter.submitList(it)
+        })
+
+//        binding.buttonFirst.setOnClickListener {
+//            findNavController().navigate(R.id.action_open_item_details)
+//        }
     }
 
     override fun onDestroyView() {
